@@ -13,26 +13,6 @@
 #define RANDOM_NUMBER 1000
 #endif
 
-/* Domineering is a game for 1 or 2 players. To now the rules i recomend to read sth about it in wikipedia.
-
-    My inpretation: 
-        * The Board have columns named like A, B, C, D ...  and lines named like  a, b, c, d ...  and YOU CHOOSE FROM WITH FIELD WILL BE STARTING YOUR MOVE 
-                IMPORTANT:
-        * Player1 is plaing verticaly, and in move gives first name of COLUMN and after this name of LINE    like  Cg   or   Aa 
-        * Player2 is plaing horizontaly, and in move gives first name of LINE and after this name of COLUMN    like  gC   or   aA   
-          so theres different way
-        
-        * In the begining of the game we'll ask you how many players will play becouse you can play with your mate or with computer
-        * Move of each players you write in terminal
-        * When player wont to give his move to opponent, he has to write ' - ' in terminal
-        * Write ' . ' (dot) when you want to give up 
-        * FIELDS is value of how many field you can take with you single move
-        * You can change values of FIELDS, HEIGHT, WIDTH or RANDOM_NUMBER if you want
-        * RANDOM_NUMBER is the number the program use only to choose one move if computer have >1 the same good for him moves
-        
-    GOOD LUCK GUYS!
-*/
-
 char GetInput()
 {
     char input = (char)getchar();
@@ -271,48 +251,57 @@ bool ComputerMoveDone(char Board[HEIGHT][WIDTH], bool InProgress)
 
     return InProgress;
 }
+void OnePlayer(char Board[HEIGHT][WIDTH]){
+    bool InProgress = true, MoveError = false;
+    while (InProgress)
+    {
+        printf("\n 1ST PLAYER MOVE(sth like Aa, Bg) \n");
+        InProgress = Player1MoveDone(Board, InProgress, &MoveError);
+        while (MoveError){
+            printf("\n PLAYER1 REPEATS HIS MOVE \n ");
+            InProgress = Player1MoveDone(Board, InProgress, &MoveError);
+        }
+        if (InProgress)
+            InProgress = ComputerMoveDone(Board, InProgress);
+    }
+}
+void DwoPlayers(char Board[HEIGHT][WIDTH]){
+    bool InProgress = true, MoveError = false;
+    while (InProgress)
+    {
+        printf("\n 1ST PLAYER MOVE(sth like Aa, Bg) \n");
+        InProgress = Player1MoveDone(Board, InProgress, &MoveError);
 
+        while (MoveError){
+            printf("\n PLAYER1 REPEATS HIS MOVE \n ");
+            InProgress = Player1MoveDone(Board, InProgress, &MoveError);
+        }
+        if (InProgress){
+            printf("\n 2ND PLAYER MOVE(sth like aA, cD) \n");
+            InProgress = Player2MoveDone(Board, InProgress, &MoveError);
+
+            while (MoveError){
+                printf("\n PLAYER2 REPEATS HIS MOVE \n ");
+                InProgress = Player1MoveDone(Board, InProgress, &MoveError);
+            }
+        }
+    }
+}
 int main()
 {
     char Board[HEIGHT][WIDTH];
     InitArr(Board);
-    bool InProgress = true, MoveError = false;
+    
     int player;
-    printf("1 player or 2 players?\n \n");
+    printf("\n 1 player or 2 players?\n \n");
     scanf("%d", &player);
 
     PrintBoard(Board);
     if(player == 1){
-        while (InProgress)
-        {
-            printf("\n 1ST PLAYER MOVE(sth like Aa, Bg) \n");
-            InProgress = Player1MoveDone(Board, InProgress, &MoveError);
-            while (MoveError){
-                printf("\n PLAYER1 REPEATS HIS MOVE \n ");
-                InProgress = Player1MoveDone(Board, InProgress, &MoveError);
-            }
-            if (InProgress)
-                InProgress = ComputerMoveDone(Board, InProgress);
-        }
+        OnePlayer(Board);
     }
     else if(player == 2){
-        while (InProgress)
-        {
-            printf("\n 1ST PLAYER MOVE(sth like Aa, Bg) \n");
-            InProgress = Player1MoveDone(Board, InProgress, &MoveError);
-            while (MoveError){
-                printf("\n PLAYER1 REPEATS HIS MOVE \n ");
-                InProgress = Player1MoveDone(Board, InProgress, &MoveError);
-            }
-            if (InProgress){
-                printf("\n 2ND PLAYER MOVE(sth like aA, cD) \n");
-                InProgress = Player2MoveDone(Board, InProgress, &MoveError);
-                while (MoveError){
-                    printf("\n PLAYER2 REPEATS HIS MOVE \n ");
-                    InProgress = Player1MoveDone(Board, InProgress, &MoveError);
-                }
-            }
-        }
+        DwoPlayers(Board);
     }
     else
         printf("Wrong number. Choose beetwen 1 and 2");
